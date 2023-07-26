@@ -1,4 +1,10 @@
 import { Router } from "express";
+import {
+    createCustomer,
+    getAllCustomers,
+    getCustomer
+} from "../controllers/customers.controllers.js";
+
 
 const router = Router();
 

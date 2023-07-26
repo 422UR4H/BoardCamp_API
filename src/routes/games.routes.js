@@ -1,4 +1,9 @@
 import { Router } from "express";
+import {
+    createGame,
+    getGames
+} from "../controllers/games.controllers.js";
+
 
 const router = Router();
 

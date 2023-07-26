@@ -1,4 +1,11 @@
 import { Router } from "express";
+import {
+    createRental,
+    deleteRental,
+    finishRental,
+    getAllRentals
+} from "../controllers/rentals.controllers.js";
+
 
 const router = Router();
 
