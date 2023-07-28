@@ -23,9 +23,25 @@ export async function createCustomer(req, res) {
 }
 
 export async function getAllCustomers(req, res) {
-
+    try {
+        const customers = (await db.query(`SELECT * FROM customers`)).rows;
+        res.send(customers);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 }
 
 export async function getCustomer(req, res) {
+    try {
+        const customer = (await db.query(
+            `SELECT * FROM customers WHERE id = $1`,
+            [req.params.id]
+        )).rows[0];
 
+        if (!customer) return res.sendStatus(404);
+
+        res.send(customer);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 }
