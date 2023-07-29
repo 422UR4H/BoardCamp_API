@@ -2,7 +2,7 @@ import { db } from "../database/database.js";
 
 export async function createCustomer(req, res) {
     const { name, phone, cpf, birthday } = res.locals.body;
-    if (!name || !phone || !cpf || !birthday) return console.log(res.locals.body)
+    if (!name || !phone || !cpf || !birthday) return res.send(res.locals.body)
 
     try {
         // rustic method to verify UNIQUE cpf
