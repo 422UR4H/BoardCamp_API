@@ -17,7 +17,7 @@ export async function createCustomer(req, res) {
             (name, phone, cpf, birthday) VALUES ($1, $2, $3, $4)`,
             [name, phone, cpf, birthday]
         );
-        if (rowCount <= 0) return res.sendStatus(500);
+        if (rowCount <= 0) return res.sendStatus(409);
 
         res.sendStatus(201);
     } catch (err) {
@@ -69,7 +69,7 @@ export async function updateCustomer(req, res) {
             WHERE id = $5`,
             [name, phone, cpf, birthday, id]
         );
-        if (rowCount <= 0) return res.sendStatus(500);
+        if (rowCount <= 0) return res.sendStatus(409);
 
         res.sendStatus(200);
     } catch (err) {

@@ -13,7 +13,7 @@ export async function createGame(req, res) {
 
         const { rowCount } = await db.query(
             `INSERT INTO games
-            (name, image, stockTotal, pricePerDay) VALUES ($1, $2, $3, $4)`,
+            (name, image, "stockTotal", "pricePerDay") VALUES ($1, $2, $3, $4)`,
             [name, image, stockTotal, pricePerDay]
         );
         if (rowCount <= 0) return res.sendStatus(500);
