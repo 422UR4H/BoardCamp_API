@@ -78,14 +78,14 @@ export async function getAllRentals(req, res) {
         console.log(result)
 
         const rentals = {
-            id,
-            customerId,
-            gameId,
-            rentDate,
-            daysRented,
-            returnDate,
-            originalPrice,
-            delayFee,
+            id: id,
+            customerId: customerId,
+            gameId: gameId,
+            rentDate: rentDate,
+            daysRented: daysRented,
+            returnDate: returnDate,
+            originalPrice: originalPrice,
+            delayFee: delayFee,
             customer: {
                 id: customerId,
                 name: customerName
@@ -94,9 +94,9 @@ export async function getAllRentals(req, res) {
                 id: gameId,
                 name: gameName
             }
-        }
+        };
         // read the console and organize before send to client
-        console.log(rentals);
+        console.log(rentals)
 
         res.send(rentals);
     } catch (err) {
