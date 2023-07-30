@@ -2,11 +2,6 @@ import { db } from "../database/database.js";
 
 export async function createCustomer(req, res) {
     const { name, phone, cpf, birthday } = res.locals.body;
-    // if (!name || !phone || !cpf || !birthday) {
-        console.log(res.locals.body)
-        return res.send(res.locals.body)
-    // }
-
     try {
         // rustic method to verify UNIQUE cpf
         const { rows } = await db.query(
@@ -54,14 +49,13 @@ export async function getCustomer(req, res) {
 
 export async function updateCustomer(req, res) {
     const { name, phone, cpf, birthday } = res.locals.body;
-    if (!name || !phone || !cpf || !birthday) return console.log(res.locals.body)
     const { id } = req.params;
 
     try {
         // rustic method to verify UNIQUE cpf by id
         const { rows } = await db.query(
             `SELECT cpf FROM customers
-            WHERE cpf = 1$ AND id <> $2`,
+            WHERE cpf = $1 AND id <> $2`,
             [cpf, id]
         );
         if (rows.length > 0) return res.sendStatus(409);

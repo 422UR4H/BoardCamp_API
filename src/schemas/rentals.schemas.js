@@ -1,4 +1,5 @@
-import Joi from "@hapi/joi";
+// import Joi from "@hapi/joi";
+import Joi from "joi";
 
 export const gamesSchema = Joi.object({
     customerId: Joi.number().integer().required(),

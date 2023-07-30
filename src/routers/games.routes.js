@@ -1,6 +1,6 @@
 import { Router } from "express";
-import schemaValidation from "../middlewares/schemaValidation.js";
 import { gamesSchema } from "../schemas/games.schemas.js";
+import schemaValidation from "../middlewares/schemaValidation.js";
 import {
     createGame,
     getGames
