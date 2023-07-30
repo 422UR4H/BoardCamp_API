@@ -13,6 +13,8 @@ export async function createCustomer(req, res) {
         );
         if (rows.length > 0) return res.sendStatus(409);
 
+        console.log("DAYJS FORMAT")
+        console.log(dayjs(birthday).format("YYYY-MM-DD"))
         const { rowCount } = await db.query(
             `INSERT INTO customers
             (name, phone, cpf, birthday) VALUES ($1, $2, $3, $4)`,
