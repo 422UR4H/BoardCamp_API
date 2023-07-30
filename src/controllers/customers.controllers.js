@@ -1,7 +1,8 @@
 import { db } from "../database/database.js";
 
 export async function createCustomer(req, res) {
-    const { name, phone, cpf, birthday } = res.locals.body;
+    // const { name, phone, cpf, birthday } = res.locals.body;
+    const { name, phone, cpf, birthday } = req.body;
     try {
         // rustic method to verify UNIQUE cpf
         const { rows } = await db.query(

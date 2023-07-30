@@ -3,8 +3,9 @@ import dayjs from "dayjs";
 
 
 export async function createRental(req, res) {
-    const { customerId, gameId, daysRented } = res.locals.body;
-    if (!customerId || !gameId || !daysRented) return console.log(res.locals.body)
+    // const { customerId, gameId, daysRented } = res.locals.body;
+    // if (!customerId || !gameId || !daysRented) return console.log(res.locals.body)
+    const { customerId, gameId, daysRented } = req.body;
 
     try {
         const customer = (await db.query(

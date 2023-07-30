@@ -1,8 +1,9 @@
 import { db } from "../database/database.js";
 
 export async function createGame(req, res) {
-    const { name, image, stockTotal, pricePerDay } = res.locals.body;
-    if (!name || !image || !stockTotal || !pricePerDay) return console.log(res.locals.body)
+    // const { name, image, stockTotal, pricePerDay } = res.locals.body;
+    // if (!name || !image || !stockTotal || !pricePerDay) return console.log(res.locals.body)
+    const { name, image, stockTotal, pricePerDay } = req.body;
 
     try {
         const { rows } = await db.query(
