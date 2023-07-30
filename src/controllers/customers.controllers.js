@@ -14,7 +14,7 @@ export async function createCustomer(req, res) {
         const { rowCount } = await db.query(
             `INSERT INTO customers
             (name, phone, cpf, birthday) VALUES ($1, $2, $3, $4)`,
-            [name, phone, cpf, birthday]
+            [name, phone, cpf, dayjs(birthday).format("YYYY-MM-DD")]
         );
         if (rowCount <= 0) return res.sendStatus(409);
 
@@ -66,7 +66,7 @@ export async function updateCustomer(req, res) {
             `UPDATE customers
             SET name = $1, phone = $2, cpf = $3, birthday = $4
             WHERE id = $5`,
-            [name, phone, cpf, birthday, id]
+            [name, phone, cpf, dayjs(birthday).format("YYYY-MM-DD"), id]
         );
         if (rowCount <= 0) return res.sendStatus(409);
 
