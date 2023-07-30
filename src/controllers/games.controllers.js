@@ -21,6 +21,8 @@ export async function createGame(req, res) {
         );
         console.log("RESULT")
         console.log(result)
+        console.log("ROWS.LENGTH")
+        console.log(rows.length)
         if (rows.lengh > 0) return res.sendStatus(409);
 
         const { rowCount } = await db.query(
