@@ -27,7 +27,7 @@ export async function createRental(req, res) {
             WHERE "gameId" = $1`,
             [gameId]
         )).rows;
-        if (rows.length >= stockTotal) return res.status(400).send("Este jogo está indisponível!");
+        if (rentals.length >= stockTotal) return res.status(400).send("Este jogo está indisponível!");
 
         const originalPrice = pricePerDay * daysRented;
         const rentDate = dayjs().locale("pt-br").format("YYYY-MM-DD");
@@ -55,6 +55,10 @@ export async function getAllRentals(req, res) {
         `)).rows;
         // read the console and organize before send to client
         console.log(rentals);
+        rentals.map(r => {
+            r.rentDate = dayjs(r.rentDate).format("YYYY-MM-DD");
+            if (r.returnDate) r.returnDate = dayjs(r.returnDate).format("YYYY-MM-DD");
+        });
         res.send(rentals);
     } catch (err) {
         res.status(500).send(err.message);

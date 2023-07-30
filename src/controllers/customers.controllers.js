@@ -56,7 +56,7 @@ export async function getCustomer(req, res) {
 
         if (!customer) return res.sendStatus(404);
 
-        customer.birthday = dayjs(c.birthday).format("YYYY-MM-DD");
+        customer.birthday = dayjs(customer.birthday).format("YYYY-MM-DD");
         res.send(customer);
     } catch (err) {
         res.status(500).send(err.message);
