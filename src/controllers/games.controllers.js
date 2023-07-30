@@ -11,18 +11,12 @@ export async function createGame(req, res) {
             `SELECT name FROM games WHERE name = $1`,
             [name]
         );
-        console.log("DB_NAME in rows: ")
-        console.log(rows)
-        console.log("NAME in req.body: ")
-        console.log(name)
+        console.log("ROWS.LENGTH")
+        console.log(rows?.length)
         const result = await db.query(
             `SELECT name FROM games WHERE name = $1`,
             [name]
         );
-        console.log("RESULT")
-        console.log(result)
-        console.log("ROWS.LENGTH")
-        console.log(rows.length)
         if (rows.lengh > 0) return res.sendStatus(409);
 
         const { rowCount } = await db.query(
