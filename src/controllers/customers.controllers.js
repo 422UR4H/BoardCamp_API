@@ -1,4 +1,6 @@
 import { db } from "../database/database.js";
+import dayjs from "dayjs";
+
 
 export async function createCustomer(req, res) {
     // const { name, phone, cpf, birthday } = res.locals.body;
