@@ -47,18 +47,56 @@ export async function createRental(req, res) {
 
 export async function getAllRentals(req, res) {
     try {
-        const rentals = (await db.query(`
-            SELECT rentals.*, customers.id, customers.name, games.id, games.name
+        const result = (await db.query(`
+            SELECT rentals.*,
+                customers.id AS "customerId",
+                customers.name AS "customerName",
+                games.id AS "gameId",
+                games.name AS "gameName"
             FROM rentals
             JOIN customers ON customers.id = rentals."customerId"
             JOIN games ON games.id = rentals."gameId"
         `)).rows;
-        // read the console and organize before send to client
-        console.log(rentals);
-        rentals.map(r => {
+
+        result.map(r => {
             r.rentDate = dayjs(r.rentDate).format("YYYY-MM-DD");
             if (r.returnDate) r.returnDate = dayjs(r.returnDate).format("YYYY-MM-DD");
         });
+
+        const {
+            id,
+            customerId,
+            gameId,
+            rentDate,
+            daysRented,
+            returnDate,
+            originalPrice,
+            delayFee,
+            customerName,
+            gameName
+        } = result;
+
+        const rentals = {
+            id,
+            customerId,
+            gameId,
+            rentDate,
+            daysRented,
+            returnDate,
+            originalPrice,
+            delayFee,
+            customer: {
+                id: customerId,
+                name: customerName
+            },
+            game: {
+                id: gameId,
+                name: gameName
+            }
+        }
+        // read the console and organize before send to client
+        console.log(rentals);
+
         res.send(rentals);
     } catch (err) {
         res.status(500).send(err.message);
@@ -105,7 +143,7 @@ export async function deleteRental(req, res) {
         if (!rentals) return res.sendStatus(404);
 
         if (!rentals.returnDate) return res.status(400).send("Aluguel não finalizado!");
-        
+
         const { rowCount } = await db.query(
             `DELETE FROM rentals
             WHERE id = $1`,
