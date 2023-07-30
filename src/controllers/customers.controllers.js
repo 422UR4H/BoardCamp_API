@@ -49,7 +49,8 @@ export async function getCustomer(req, res) {
 }
 
 export async function updateCustomer(req, res) {
-    const { name, phone, cpf, birthday } = res.locals.body;
+    // const { name, phone, cpf, birthday } = res.locals.body;
+    const { name, phone, cpf, birthday } = req.body;
     const { id } = req.params;
 
     try {

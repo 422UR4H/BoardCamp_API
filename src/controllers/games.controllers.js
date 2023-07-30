@@ -10,6 +10,10 @@ export async function createGame(req, res) {
             `SELECT name FROM games WHERE name = $1`,
             [name]
         );
+        console.error("DB_NAME in rows: ")
+        console.log(rows)
+        console.error("NAME in req.body: ")
+        console.log(name)
         if (rows.lengh > 0) return res.sendStatus(409);
 
         const { rowCount } = await db.query(
