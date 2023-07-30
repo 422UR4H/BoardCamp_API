@@ -75,6 +75,7 @@ export async function getAllRentals(req, res) {
             customerName,
             gameName
         } = result;
+        console.log(result)
 
         const rentals = {
             id,
