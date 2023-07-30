@@ -7,11 +7,11 @@ export async function createCustomer(req, res) {
     const { name, phone, cpf, birthday } = req.body;
     try {
         // rustic method to verify UNIQUE cpf
-        const { rows } = await db.query(
+        const result = await db.query(
             `SELECT cpf FROM customers WHERE cpf = $1`,
             [cpf]
         );
-        if (rows.length > 0) return res.sendStatus(409);
+        if (result.rows.length > 0 || result.rowCount > 0) return res.sendStatus(409);
 
         console.log("DAYJS FORMAT")
         console.log(dayjs(birthday).format("YYYY-MM-DD"))
@@ -21,6 +21,15 @@ export async function createCustomer(req, res) {
             [name, phone, cpf, dayjs(birthday).format("YYYY-MM-DD")]
         );
         if (rowCount <= 0) return res.sendStatus(409);
+        
+        // fix date
+        const customer = await db.query(
+            `SELECT * FROM customers WHERE cpf = $1`,
+            [cpf]
+        );
+        console.log("CUSTOMER")
+        console.log(customer)
+
 
         res.sendStatus(201);
     } catch (err) {
@@ -31,6 +40,7 @@ export async function createCustomer(req, res) {
 export async function getAllCustomers(req, res) {
     try {
         const customers = (await db.query(`SELECT * FROM customers`)).rows;
+        customers.map(c => c.birthday = dayjs(c.birthday).format("YYYY-MM-DD"));
         res.send(customers);
     } catch (err) {
         res.status(500).send(err.message);
@@ -46,6 +56,7 @@ export async function getCustomer(req, res) {
 
         if (!customer) return res.sendStatus(404);
 
+        customer.birthday = dayjs(c.birthday).format("YYYY-MM-DD");
         res.send(customer);
     } catch (err) {
         res.status(500).send(err.message);
