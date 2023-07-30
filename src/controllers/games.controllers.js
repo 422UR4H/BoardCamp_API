@@ -6,18 +6,15 @@ export async function createGame(req, res) {
     const { name, image, stockTotal, pricePerDay } = req.body;
 
     try {
-        console.log(name, image, stockTotal, pricePerDay)
-        const { rows } = await db.query(
-            `SELECT name FROM games WHERE name = $1`,
-            [name]
-        );
-        console.log("ROWS.LENGTH")
-        console.log(rows?.length)
         const result = await db.query(
             `SELECT name FROM games WHERE name = $1`,
             [name]
         );
-        if (rows.lengh > 0) return res.sendStatus(409);
+        console.log("RESULT.ROWS.LENGTH")
+        console.log(result?.rows?.length)
+        console.log("RESULT.ROW_COUNT")
+        console.log(result.rowCount)
+        if (result.rows.lengh > 0 || result.rowCount > 0) return res.sendStatus(409);
 
         const { rowCount } = await db.query(
             `INSERT INTO games
