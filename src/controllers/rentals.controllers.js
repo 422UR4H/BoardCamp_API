@@ -46,15 +46,39 @@ export async function createRental(req, res) {
 }
 
 export async function getAllRentals(req, res) {
+    const { customerId, gameId } = req.query;
     try {
-        const rentals = (await db.query(`
-            SELECT rentals.*,
-                customers.name AS "customerName",
-                games.name AS "gameName"
-            FROM rentals
-            JOIN customers ON customers.id = rentals."customerId"
-            JOIN games ON games.id = rentals."gameId"
-        `)).rows;
+        let rentals;
+        if (customerId) {
+            rentals = (await db.query(`
+                SELECT rentals.*,
+                    customers.name AS "customerName",
+                    games.name AS "gameName"
+                FROM rentals
+                JOIN customers ON customers.id = rentals."customerId"
+                JOIN games ON games.id = rentals."gameId"
+                WHERE "customerId" =  $1
+            `, [customerId])).rows;
+        } else if (gameId) {
+            rentals = (await db.query(`
+                SELECT rentals.*,
+                    customers.name AS "customerName",
+                    games.name AS "gameName"
+                FROM rentals
+                JOIN customers ON customers.id = rentals."customerId"
+                JOIN games ON games.id = rentals."gameId"
+                WHERE "gameId" = $1
+            `, [gameId])).rows;
+        } else {
+            rentals = (await db.query(`
+                SELECT rentals.*,
+                    customers.name AS "customerName",
+                    games.name AS "gameName"
+                FROM rentals
+                JOIN customers ON customers.id = rentals."customerId"
+                JOIN games ON games.id = rentals."gameId"
+            `)).rows;
+        }
 
         rentals.map(r => {
             r.rentDate = dayjs(r.rentDate).format("YYYY-MM-DD");
