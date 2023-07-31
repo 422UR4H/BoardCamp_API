@@ -99,7 +99,8 @@ export async function finishRental(req, res) {
     const { id } = req.params;
     try {
         const rental = (await db.query(
-            `SELECT * FROM rentals WHERE id = $1`,
+            `SELECT rentals.*, games."originalPrice" FROM rentals
+            WHERE id = $1 JOIN games ON games.id = rentals."gameId"`,
             [id]
         )).rows[0];
         if (!rental) return res.sendStatus(404);
@@ -135,7 +136,7 @@ export async function deleteRental(req, res) {
     const { id } = req.params.id;
     try {
         const rentals = (await db.query(
-            `SELECT id, "returnDate" FROM rentals WHERE id = $1`,
+            `SELECT "returnDate" FROM rentals WHERE id = $1`,
             [id]
         )).rows[0];
         if (!rentals) return res.sendStatus(404);
@@ -143,8 +144,7 @@ export async function deleteRental(req, res) {
         if (!rentals.returnDate) return res.status(400).send("Aluguel não finalizado!");
 
         const { rowCount } = await db.query(
-            `DELETE FROM rentals
-            WHERE id = $1`,
+            `DELETE FROM rentals WHERE id = $1`,
             [id]
         );
         if (rowCount <= 0) return res.sendStatus(409);
