@@ -1,5 +1,6 @@
 import { db } from "../database/database.js";
 import dayjs from "dayjs";
+import hasUpperCase from "../scripts/hasUpperCase.js";
 
 
 export async function createRental(req, res) {
@@ -47,8 +48,26 @@ export async function createRental(req, res) {
 
 export async function getAllRentals(req, res) {
     const { customerId, gameId } = req.query;
+    let { offset, limit, order, desc } = req.query;
     try {
         let rentals;
+        let orderBy;
+
+        if (!offset) offset = 0;
+        if (!limit) limit = null;
+        if (!order) {
+            orderBy = "";
+        } else {
+            if (hasUpperCase(order)) order = `\"${order}\"`;
+            orderBy = `ORDER BY ${order}`;
+
+            if (!desc) {
+                orderBy += " ASC";
+            } else {
+                orderBy += " DESC";
+            }
+        }
+
         if (customerId) {
             rentals = (await db.query(`
                 SELECT rentals.*,
@@ -58,7 +77,9 @@ export async function getAllRentals(req, res) {
                 JOIN customers ON customers.id = rentals."customerId"
                 JOIN games ON games.id = rentals."gameId"
                 WHERE "customerId" = $1
-            `, [customerId])).rows;
+                ${orderBy}
+                LIMIT $2 OFFSET $3
+            `, [customerId, limit, offset])).rows;
         } else if (gameId) {
             rentals = (await db.query(`
                 SELECT rentals.*,
@@ -68,7 +89,9 @@ export async function getAllRentals(req, res) {
                 JOIN customers ON customers.id = rentals."customerId"
                 JOIN games ON games.id = rentals."gameId"
                 WHERE "gameId" = $1
-            `, [gameId])).rows;
+                ${orderBy}
+                LIMIT $2 OFFSET $3
+            `, [gameId, limit, offset])).rows;
         } else {
             rentals = (await db.query(`
                 SELECT rentals.*,
@@ -77,7 +100,9 @@ export async function getAllRentals(req, res) {
                 FROM rentals
                 JOIN customers ON customers.id = rentals."customerId"
                 JOIN games ON games.id = rentals."gameId"
-            `)).rows;
+                ${orderBy}
+                LIMIT $1 OFFSET $2
+            `, [limit, offset])).rows;
         }
 
         rentals.map(r => {
