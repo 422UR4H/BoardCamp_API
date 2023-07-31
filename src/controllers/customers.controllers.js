@@ -28,12 +28,25 @@ export async function createCustomer(req, res) {
 
 export async function getAllCustomers(req, res) {
     const { cpf } = req.query;
-    try {
-        const customers = !cpf ?
-            (await db.query(`SELECT * FROM customers`)).rows
-            :
-            (await db.query(`SELECT * FROM customers WHERE cpf LIKE $1`, [`${cpf}%`])).rows;
+    let { limit, offset } = req.query;
 
+    try {
+        let customers;
+
+        if (!limit) limit = null;
+        if (!offset) offset = 0;
+
+        if (!cpf) {
+            customers = (await db.query(
+                `SELECT * FROM customers LIMIT $1 OFFSET $2`,
+                [limit, offset]
+            )).rows;
+        } else {
+            customers = (await db.query(
+                `SELECT * FROM customers WHERE cpf LIKE $1 LIMIT $2 OFFSET $3`,
+                [`${cpf}%`, limit, offset]
+            )).rows;
+        }
         customers.map(c => c.birthday = dayjs(c.birthday).format("YYYY-MM-DD"));
         res.send(customers);
     } catch (err) {
