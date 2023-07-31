@@ -141,13 +141,12 @@ export async function finishRental(req, res) {
 }
 
 export async function deleteRental(req, res) {
-    const { id } = req.params.id;
+    const { id } = req.params;
     try {
         const rentals = (await db.query(
             `SELECT "returnDate" FROM rentals WHERE id = $1`,
             [id]
         )).rows[0];
-        console.log(rentals)
         if (!rentals) return res.sendStatus(404);
 
         if (!rentals.returnDate) return res.status(400).send("Aluguel não finalizado!");
