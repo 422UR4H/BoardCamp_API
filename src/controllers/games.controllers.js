@@ -42,12 +42,14 @@ export async function getGames(req, res) {
         } else {
             // validate with columns array
             order = "ORDER BY " + order;
+
+            if (!desc) {
+                order += " ASC";
+            } else {
+                order += " DESC";
+            }
         }
-        if (!desc) {
-            order += " ASC";
-        } else {
-            order += " DESC";
-        }
+        console.log(order)
 
         if (!name) {
             games = (await db.query(
