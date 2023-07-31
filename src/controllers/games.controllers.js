@@ -38,7 +38,7 @@ export async function getGames(req, res) {
         if (!name) {
             games = (await db.query(`SELECT * FROM games`)).rows
         } else {
-            games = (await db.query("SELECT * FROM games WHERE name LIKE '$1%'", [name])).rows;
+            games = (await db.query("SELECT * FROM games WHERE name LIKE '$1'", [`${name}%`])).rows;
         }
         console.log("GAMES")
         console.log(games)
