@@ -32,7 +32,7 @@ export async function getAllCustomers(req, res) {
         const customers = !cpf ?
             (await db.query(`SELECT * FROM customers`)).rows
             :
-            (await db.query(`SELECT * FROM customers WHERE cpf LIKE $1%`, [cpf])).rows;
+            (await db.query(`SELECT * FROM customers WHERE cpf LIKE $1`, [`${cpf}%`])).rows;
 
         customers.map(c => c.birthday = dayjs(c.birthday).format("YYYY-MM-DD"));
         res.send(customers);
