@@ -1,5 +1,6 @@
 import { db } from "../database/database.js";
 import dayjs from "dayjs";
+import hasUpperCase from "../scripts/hasUpperCase.js";
 
 
 export async function createCustomer(req, res) {

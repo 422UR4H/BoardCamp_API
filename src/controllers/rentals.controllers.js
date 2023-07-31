@@ -57,7 +57,7 @@ export async function getAllRentals(req, res) {
                 FROM rentals
                 JOIN customers ON customers.id = rentals."customerId"
                 JOIN games ON games.id = rentals."gameId"
-                WHERE "customerId" =  $1
+                WHERE "customerId" = $1
             `, [customerId])).rows;
         } else if (gameId) {
             rentals = (await db.query(`
@@ -87,7 +87,6 @@ export async function getAllRentals(req, res) {
             r.customer = { id: r.customerId, name: r.customerName };
             r.game = { id: r.gameId, name: r.gameName };
         });
-        console.log(rentals)
 
         res.send(rentals);
     } catch (err) {
@@ -111,17 +110,10 @@ export async function finishRental(req, res) {
 
         returnDate = dayjs();
         let delayFee = returnDate.diff(dayjs(rentDate), "day");
-        console.log("DIFF 1")
-        console.log(delayFee)
 
         if (delayFee > daysRented) {
             delayFee -= daysRented;
-            console.log("DELAY_FEE 2")
-            console.log(delayFee)
-    
             delayFee *= pricePerDay;
-            console.log("DELAY_FEE 3")
-            console.log(delayFee)
         } else {
             delayFee = 0;
         }
