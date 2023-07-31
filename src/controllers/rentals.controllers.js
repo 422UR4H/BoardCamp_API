@@ -30,7 +30,7 @@ export async function createRental(req, res) {
         if (rentals.length >= stockTotal) return res.status(400).send("Este jogo está indisponível!");
 
         const originalPrice = pricePerDay * daysRented;
-        const rentDate = dayjs().locale("pt-br").format("YYYY-MM-DD");
+        const rentDate = dayjs().valueOf();
         const { rowCount } = await db.query(
             `INSERT INTO rentals
             ("customerId", "gameId", "rentDate", "daysRented", "returnDate", "originalPrice", "delayFee")
@@ -80,11 +80,12 @@ export async function finishRental(req, res) {
         )).rows[0];
         if (!rental) return res.sendStatus(404);
 
-        const { returnDate, rentalDate, delayFee } = rental;
-        if (rental.returnDate) return res.status(400).send("Aluguel já finalizado!");
+        const { rentDate } = rental;
+        let { returnDate, delayFee } = rental;
+        if (returnDate) return res.status(400).send("Aluguel já finalizado!");
 
-        returnDate = dayjs.locale("pt-br").format("YYYY-MM-DD");
-        delayFee = returnDate.diff(rentalDate, "day");
+        returnDate = dayjs().locale("pt-br").format("YYYY-MM-DD");
+        delayFee = returnDate.format("YYYY-MM-DD").diff(rentDate, "day");
         delayFee *= originalPrice;
 
         const { rowCount } = await db.query(

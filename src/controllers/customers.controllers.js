@@ -13,23 +13,12 @@ export async function createCustomer(req, res) {
         );
         if (result.rows.length > 0 || result.rowCount > 0) return res.sendStatus(409);
 
-        console.log("DAYJS FORMAT")
-        console.log(dayjs(birthday).format("YYYY-MM-DD"))
         const { rowCount } = await db.query(
             `INSERT INTO customers
             (name, phone, cpf, birthday) VALUES ($1, $2, $3, $4)`,
-            [name, phone, cpf, dayjs(birthday).format("YYYY-MM-DD")]
+            [name, phone, cpf, dayjs(birthday).valueOf()]
         );
         if (rowCount <= 0) return res.sendStatus(409);
-        
-        // fix date
-        const customer = await db.query(
-            `SELECT * FROM customers WHERE cpf = $1`,
-            [cpf]
-        );
-        console.log("CUSTOMER")
-        console.log(customer)
-
 
         res.sendStatus(201);
     } catch (err) {
@@ -81,7 +70,7 @@ export async function updateCustomer(req, res) {
             `UPDATE customers
             SET name = $1, phone = $2, cpf = $3, birthday = $4
             WHERE id = $5`,
-            [name, phone, cpf, dayjs(birthday).format("YYYY-MM-DD"), id]
+            [name, phone, cpf, dayjs(birthday).valueOf(), id]
         );
         if (rowCount <= 0) return res.sendStatus(409);
 
