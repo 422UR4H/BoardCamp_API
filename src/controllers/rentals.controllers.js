@@ -90,8 +90,8 @@ export async function finishRental(req, res) {
 
         const { rowCount } = await db.query(
             `UPDATE rentals
-            SET "returnDate"=$1, "delayFee"=$2,
-            WHERE id=$3`,
+            SET "returnDate" = $1, "delayFee" = $2
+            WHERE id = $3`,
             [returnDate, delayFee, id]
         );
         if (rowCount <= 0) return res.sendStatus(409);
