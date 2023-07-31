@@ -92,7 +92,7 @@ export async function finishRental(req, res) {
             `UPDATE rentals
             SET "returnDate" = $1, "delayFee" = $2
             WHERE id = $3`,
-            [returnDate, delayFee, id]
+            [returnDate.format("YYYY-MM-DD"), delayFee, id]
         );
         if (rowCount <= 0) return res.sendStatus(409);
 
