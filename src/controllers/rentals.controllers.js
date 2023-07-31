@@ -47,55 +47,22 @@ export async function createRental(req, res) {
 
 export async function getAllRentals(req, res) {
     try {
-        const result = (await db.query(`
+        const rentals = (await db.query(`
             SELECT rentals.*,
-                customers.id AS "customerId",
                 customers.name AS "customerName",
-                games.id AS "gameId",
                 games.name AS "gameName"
             FROM rentals
             JOIN customers ON customers.id = rentals."customerId"
             JOIN games ON games.id = rentals."gameId"
         `)).rows;
 
-        result.map(r => {
+        rentals.map(r => {
             r.rentDate = dayjs(r.rentDate).format("YYYY-MM-DD");
             if (r.returnDate) r.returnDate = dayjs(r.returnDate).format("YYYY-MM-DD");
+
+            r.customer = { id: r.customerId, name: r.customerName };
+            r.customer = { id: r.gameId, name: r.gameName };
         });
-
-        const {
-            id,
-            customerId,
-            gameId,
-            rentDate,
-            daysRented,
-            returnDate,
-            originalPrice,
-            delayFee,
-            customerName,
-            gameName
-        } = result;
-        console.log(result)
-
-        const rentals = {
-            id: id,
-            customerId: customerId,
-            gameId: gameId,
-            rentDate: rentDate,
-            daysRented: daysRented,
-            returnDate: returnDate,
-            originalPrice: originalPrice,
-            delayFee: delayFee,
-            customer: {
-                id: customerId,
-                name: customerName
-            },
-            game: {
-                id: gameId,
-                name: gameName
-            }
-        };
-        // read the console and organize before send to client
         console.log(rentals)
 
         res.send(rentals);
