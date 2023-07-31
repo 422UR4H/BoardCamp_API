@@ -61,7 +61,7 @@ export async function getAllRentals(req, res) {
             if (r.returnDate) r.returnDate = dayjs(r.returnDate).format("YYYY-MM-DD");
 
             r.customer = { id: r.customerId, name: r.customerName };
-            r.customer = { id: r.gameId, name: r.gameName };
+            r.game = { id: r.gameId, name: r.gameName };
         });
         console.log(rentals)
 
@@ -81,11 +81,11 @@ export async function finishRental(req, res) {
         if (!rental) return res.sendStatus(404);
 
         const { rentDate } = rental;
-        let { returnDate, delayFee } = rental;
+        let { returnDate } = rental;
         if (returnDate) return res.status(400).send("Aluguel já finalizado!");
 
         returnDate = dayjs().locale("pt-br").format("YYYY-MM-DD");
-        delayFee = returnDate.format("YYYY-MM-DD").diff(rentDate, "day");
+        let delayFee = returnDate.diff(rentDate.format("YYYY-MM-DD"), "day");
         delayFee *= originalPrice;
 
         const { rowCount } = await db.query(
