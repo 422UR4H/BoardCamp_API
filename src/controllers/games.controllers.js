@@ -36,7 +36,7 @@ export async function getGames(req, res) {
         let games;
 
         if (!offset) offset = 0;
-        if (!limit) limit = "ALL";
+        if (!limit) limit = null;
 
         if (!name) {
             games = (await db.query(

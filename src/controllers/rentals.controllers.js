@@ -99,22 +99,22 @@ export async function finishRental(req, res) {
     const { id } = req.params;
     try {
         const rental = (await db.query(
-            `SELECT rentals.*, games."originalPrice" FROM rentals
+            `SELECT rentals.*, games."pricePerDay" FROM rentals
             JOIN games ON games.id = rentals."gameId" WHERE id = $1`,
             [id]
         )).rows[0];
         if (!rental) return res.sendStatus(404);
 
-        const { rentDate, daysRented, originalPrice } = rental;
+        const { rentDate, daysRented, pricePerDay } = rental;
         let { returnDate } = rental;
         if (returnDate) return res.status(400).send("Aluguel já finalizado!");
 
         returnDate = dayjs();
         let delayFee = returnDate.diff(dayjs(rentDate), "day");
         delayFee -= daysRented;
-        delayFee *= originalPrice;
+        delayFee *= pricePerDay;
         console.log("ORIGINAL_PRICE")
-        console.log(originalPrice)
+        console.log(pricePerDay)
         console.log("SEG DELAY_FEE")
         console.log(delayFee)
 
