@@ -32,10 +32,13 @@ export async function createGame(req, res) {
 export async function getGames(req, res) {
     const { name } = req.query;
     try {
-        const games = !name ?
-            (await db.query(`SELECT * FROM games`)).rows
-            :
-            (await db.query("SELECT * FROM games WHERE name LIKE '$1%'", [name])).rows;
+        console.log("NAME")
+        console.log(name)
+        let games;
+        if (!name) games = (await db.query(`SELECT * FROM games`)).rows;
+        games = (await db.query("SELECT * FROM games WHERE name LIKE '$1%'", [name])).rows;
+        console.log("GAMES")
+        console.log(games)
 
         res.send(games);
     } catch (err) {

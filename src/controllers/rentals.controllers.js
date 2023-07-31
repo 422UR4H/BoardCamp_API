@@ -88,6 +88,10 @@ export async function finishRental(req, res) {
         let delayFee = returnDate.diff(rentDate, "day");
         delayFee *= originalPrice;
 
+        console.log("RETURN_DATE")
+        console.log(returnDate)
+        console.log("RETURN_DATE.FORMAT")
+        console.log(returnDate.format("YYYY-MM-DD"))
         const { rowCount } = await db.query(
             `UPDATE rentals
             SET "returnDate" = $1, "delayFee" = $2
