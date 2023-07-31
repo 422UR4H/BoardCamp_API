@@ -88,8 +88,8 @@ export async function finishRental(req, res) {
         console.log("RETURN_DATE")
         console.log(returnDate)
         console.log("RENT_DATE")
-        console.log(rentDate)
-        let delayFee = returnDate.diff(rentDate, "day");
+        console.log(dayjs(rentDate))
+        let delayFee = returnDate.diff(dayjs(rentDate), "day");
         console.log("DELAY_FEE")
         console.log(delayFee)
         delayFee *= originalPrice;
