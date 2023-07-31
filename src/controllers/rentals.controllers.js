@@ -111,12 +111,20 @@ export async function finishRental(req, res) {
 
         returnDate = dayjs();
         let delayFee = returnDate.diff(dayjs(rentDate), "day");
-        delayFee -= daysRented;
-        delayFee *= pricePerDay;
-        console.log("ORIGINAL_PRICE")
-        console.log(pricePerDay)
-        console.log("SEG DELAY_FEE")
+        console.log("DELAY_FEE 1")
         console.log(delayFee)
+
+        if (delayFee > 0) {
+            delayFee -= daysRented;
+            console.log("DELAY_FEE 2")
+            console.log(delayFee)
+    
+            delayFee *= pricePerDay;
+            console.log("DELAY_FEE 3")
+            console.log(delayFee)
+        } else {
+            delayFee = 0;
+        }
 
         const { rowCount } = await db.query(
             `UPDATE rentals
