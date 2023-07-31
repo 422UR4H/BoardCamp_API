@@ -147,6 +147,7 @@ export async function deleteRental(req, res) {
             `SELECT "returnDate" FROM rentals WHERE id = $1`,
             [id]
         )).rows[0];
+        console.log(rentals)
         if (!rentals) return res.sendStatus(404);
 
         if (!rentals.returnDate) return res.status(400).send("Aluguel não finalizado!");
