@@ -85,7 +85,7 @@ export async function finishRental(req, res) {
         if (returnDate) return res.status(400).send("Aluguel já finalizado!");
 
         returnDate = dayjs().format("YYYY-MM-DD");
-        let delayFee = returnDate.diff(rentDate.format("YYYY-MM-DD"), "day");
+        let delayFee = returnDate.diff(rentDate, "day");
         delayFee *= originalPrice;
 
         const { rowCount } = await db.query(
