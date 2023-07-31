@@ -31,18 +31,23 @@ export async function createGame(req, res) {
 
 export async function getGames(req, res) {
     const { name } = req.query;
+    let { offset } = req.query;
     try {
-        console.log("NAME")
-        console.log(name)
         let games;
-        if (!name) {
-            games = (await db.query(`SELECT * FROM games`)).rows
-        } else {
-            games = (await db.query("SELECT * FROM games WHERE name LIKE $1", [`${name}%`])).rows;
-        }
-        console.log("GAMES")
-        console.log(games)
 
+        if (!offset) offset = 0;
+
+        if (!name) {
+            games = (await db.query(
+                `SELECT * FROM games OFFSET $1`,
+                [offset]
+            )).rows
+        } else {
+            games = (await db.query(
+                "SELECT * FROM games WHERE name LIKE $1 OFFSET $2",
+                [`${name}%`, offset]
+            )).rows;
+        }
         res.send(games);
     } catch (err) {
         res.status(500).send(err);
