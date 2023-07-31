@@ -80,7 +80,7 @@ export async function finishRental(req, res) {
         )).rows[0];
         if (!rental) return res.sendStatus(404);
 
-        const { rentDate } = rental;
+        const { rentDate, originalPrice } = rental;
         let { returnDate } = rental;
         if (returnDate) return res.status(400).send("Aluguel já finalizado!");
 
