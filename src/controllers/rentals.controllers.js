@@ -100,7 +100,7 @@ export async function finishRental(req, res) {
     try {
         const rental = (await db.query(
             `SELECT rentals.*, games."originalPrice" FROM rentals
-            WHERE id = $1 JOIN games ON games.id = rentals."gameId"`,
+            JOIN games ON games.id = rentals."gameId" WHERE id = $1`,
             [id]
         )).rows[0];
         if (!rental) return res.sendStatus(404);
