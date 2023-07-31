@@ -11,10 +11,6 @@ export async function createGame(req, res) {
             `SELECT name FROM games WHERE name = $1`,
             [name]
         );
-        console.log("RESULT.ROWS.LENGTH")
-        console.log(result?.rows?.length)
-        console.log("RESULT.ROW_COUNT")
-        console.log(result.rowCount)
         if (result.rows.lengh > 0 || result.rowCount > 0) return res.sendStatus(409);
 
         const { rowCount } = await db.query(
@@ -52,7 +48,6 @@ export async function getGames(req, res) {
                 orderBy += " DESC";
             }
         }
-        console.log(order)
 
         if (!name) {
             games = (await db.query(

@@ -28,22 +28,35 @@ export async function createCustomer(req, res) {
 
 export async function getAllCustomers(req, res) {
     const { cpf } = req.query;
-    let { limit, offset } = req.query;
+    let { limit, offset, order, desc } = req.query;
 
     try {
         let customers;
+        let orderBy;
 
         if (!limit) limit = null;
         if (!offset) offset = 0;
+        if (!order) {
+            orderBy = "";
+        } else {
+            if (hasUpperCase(order)) order = `\"${order}\"`;
+            orderBy = `ORDER BY ${order}`;
+
+            if (!desc) {
+                orderBy += " ASC";
+            } else {
+                orderBy += " DESC";
+            }
+        }
 
         if (!cpf) {
             customers = (await db.query(
-                `SELECT * FROM customers LIMIT $1 OFFSET $2`,
+                `SELECT * FROM customers ${orderBy} LIMIT $1 OFFSET $2`,
                 [limit, offset]
             )).rows;
         } else {
             customers = (await db.query(
-                `SELECT * FROM customers WHERE cpf LIKE $1 LIMIT $2 OFFSET $3`,
+                `SELECT * FROM customers ${orderBy} WHERE cpf LIKE $1 LIMIT $2 OFFSET $3`,
                 [`${cpf}%`, limit, offset]
             )).rows;
         }
