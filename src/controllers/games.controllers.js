@@ -31,21 +31,32 @@ export async function createGame(req, res) {
 
 export async function getGames(req, res) {
     const { name } = req.query;
-    let { offset, limit } = req.query;
+    let { offset, limit, order, desc } = req.query;
     try {
         let games;
 
         if (!offset) offset = 0;
         if (!limit) limit = null;
+        if (!order) {
+            order = "";
+        } else {
+            // validate with columns array
+            order = "ORDER BY " + order;
+        }
+        if (!desc) {
+            order += " ASC";
+        } else {
+            order += " DESC";
+        }
 
         if (!name) {
             games = (await db.query(
-                `SELECT * FROM games LIMIT $1 OFFSET $2`,
+                `SELECT * FROM games ${order} LIMIT $1 OFFSET $2`,
                 [limit, offset]
             )).rows
         } else {
             games = (await db.query(
-                "SELECT * FROM games WHERE name LIKE $1 LIMIT $2 OFFSET $3",
+                `SELECT * FROM games ${order} WHERE name LIKE $1 LIMIT $2 OFFSET $3`,
                 [`${name}%`, limit, offset]
             )).rows;
         }
