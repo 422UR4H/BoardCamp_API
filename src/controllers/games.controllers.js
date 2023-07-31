@@ -1,4 +1,5 @@
 import { db } from "../database/database.js";
+import hasUpperCase from "../scripts/hasUpperCase.js";
 
 export async function createGame(req, res) {
     // const { name, image, stockTotal, pricePerDay } = res.locals.body;
@@ -50,6 +51,7 @@ export async function getGames(req, res) {
                 orderBy += " DESC";
             }
         }
+        if (hasUpperCase(order)) order = `\"${order}\"`;
         console.log(order)
 
         if (!name) {
