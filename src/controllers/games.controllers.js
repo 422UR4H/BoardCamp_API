@@ -43,7 +43,8 @@ export async function getGames(req, res) {
             orderBy = "";
         } else {
             // validate with columns array
-            orderBy = "ORDER BY $1";
+            if (hasUpperCase(order)) order = `\"${order}\"`;
+            orderBy = `ORDER BY ${order}`;
 
             if (!desc) {
                 orderBy += " ASC";
@@ -51,18 +52,17 @@ export async function getGames(req, res) {
                 orderBy += " DESC";
             }
         }
-        if (hasUpperCase(order)) order = `\"${order}\"`;
         console.log(order)
 
         if (!name) {
             games = (await db.query(
-                `SELECT * FROM games ${orderBy} LIMIT $2 OFFSET $3`,
-                [order, limit, offset]
+                `SELECT * FROM games ${orderBy} LIMIT $1 OFFSET $2`,
+                [limit, offset]
             )).rows
         } else {
             games = (await db.query(
-                `SELECT * FROM games ${orderBy} WHERE name LIKE $2 LIMIT $3 OFFSET $4`,
-                [order, `${name}%`, limit, offset]
+                `SELECT * FROM games ${orderBy} WHERE name LIKE $1 LIMIT $2 OFFSET $3`,
+                [`${name}%`, limit, offset]
             )).rows;
         }
         res.send(games);
