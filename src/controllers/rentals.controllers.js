@@ -110,11 +110,11 @@ export async function finishRental(req, res) {
         if (returnDate) return res.status(400).send("Aluguel já finalizado!");
 
         returnDate = dayjs();
-        let diff = returnDate.diff(dayjs(rentDate), "day");
+        let delayFee = returnDate.diff(dayjs(rentDate), "day");
         console.log("DIFF 1")
-        console.log(diff)
+        console.log(delayFee)
 
-        if (diff > daysRented) {
+        if (delayFee > daysRented) {
             delayFee -= daysRented;
             console.log("DELAY_FEE 2")
             console.log(delayFee)
