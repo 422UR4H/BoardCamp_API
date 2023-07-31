@@ -84,7 +84,7 @@ export async function finishRental(req, res) {
         let { returnDate } = rental;
         if (returnDate) return res.status(400).send("Aluguel já finalizado!");
 
-        returnDate = dayjs().format();
+        returnDate = dayjs();
         console.log("RETURN_DATE")
         console.log(returnDate)
         console.log("RENT_DATE")
