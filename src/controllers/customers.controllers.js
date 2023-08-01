@@ -12,12 +12,16 @@ export async function createCustomer(req, res) {
             `SELECT cpf FROM customers WHERE cpf = $1`,
             [cpf]
         );
-        if (result.rows.length > 0 || result.rowCount > 0) return res.sendStatus(409);
+        if (result.rows.length > 0 || result.rowCount > 0) {
+            return res.status(409).send({ message: "Esse CPF já foi cadastrado!" });
+        }
 
         const { rowCount } = await db.query(
             `INSERT INTO customers
-            (name, phone, cpf, birthday) VALUES ($1, $2, $3, $4)`,
-            [name, phone, cpf, dayjs(birthday).format("YYYY-MM-DD")]
+                (name, phone, cpf, birthday)
+            VALUES
+                ($1, $2, $3, $4)`,
+            [name, phone, cpf, dayjs(birthday).format("YYYY-MM-DD")] // delete format when validated by Joi
         );
         if (rowCount <= 0) return res.sendStatus(409);
 
@@ -75,10 +79,10 @@ export async function getCustomer(req, res) {
             [req.params.id]
         )).rows[0];
 
-        if (!customer) return res.sendStatus(404);
+        if (!customer) return res.status(404).send({ message: "Cliente não encontrado!" });
 
         customer.birthday = dayjs(customer.birthday).format("YYYY-MM-DD");
-        res.send(customer);
+        res.send({ ...customer, birthday: dayjs(customer.birthday).format("YYYY-MM-DD") });
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -104,7 +108,11 @@ export async function updateCustomer(req, res) {
             WHERE id = $5`,
             [name, phone, cpf, dayjs(birthday).format("YYYY-MM-DD"), id]
         );
-        if (rowCount <= 0) return res.sendStatus(409);
+        if (rowCount <= 0) {
+            return res
+                .status(409)
+                .send("Não foi possível atualizar. O Cliente pode estar aberto ou sendo utilizado!");
+        }
 
         res.sendStatus(200);
     } catch (err) {

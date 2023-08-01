@@ -10,22 +10,25 @@ export async function createRental(req, res) {
 
     try {
         const customer = (await db.query(
-            `SELECT name FROM customers
+            `SELECT name
+            FROM customers
             WHERE id = $1`,
             [customerId]
         )).rows[0];
         if (!customer) return res.status(400).send("Este Cliente não existe!");
 
         const { pricePerDay, stockTotal } = (await db.query(
-            `SELECT "pricePerDay", "stockTotal" FROM games
+            `SELECT "pricePerDay", "stockTotal"
+            FROM games
             WHERE id = $1`,
             [gameId]
         )).rows[0];
-        if (!pricePerDay) return res.status(400).send("Este jogo não existe!");
+        if (!stockTotal) return res.status(400).send("Este jogo não existe!");
 
         const rentals = (await db.query(
-            `SELECT id FROM rentals
-            WHERE "gameId" = $1`,
+            `SELECT id
+            FROM rentals
+            WHERE "gameId" = $1 AND "returnDate" IS NULL`,
             [gameId]
         )).rows;
         if (rentals.length >= stockTotal) return res.status(400).send("Este jogo está indisponível!");
@@ -123,15 +126,21 @@ export async function finishRental(req, res) {
     const { id } = req.params;
     try {
         const rental = (await db.query(
-            `SELECT rentals.*, games."pricePerDay" FROM rentals
-            JOIN games ON games.id = rentals."gameId" WHERE rentals.id = $1`,
+            `SELECT rentals.*, games."pricePerDay"
+            FROM rentals
+            JOIN games ON games.id = rentals."gameId"
+            WHERE rentals.id = $1`,
             [id]
         )).rows[0];
-        if (!rental) return res.sendStatus(404);
+        if (!rental) {
+            return res.status(404).send({ message: "Este aluguel não existe!" });
+        }
 
         const { rentDate, daysRented, pricePerDay } = rental;
         let { returnDate } = rental;
-        if (returnDate) return res.status(400).send("Aluguel já finalizado!");
+        if (returnDate) {
+            return res.status(400).send({ message: "Aluguel já finalizado!" });
+        }
 
         returnDate = dayjs();
         let delayFee = returnDate.diff(dayjs(rentDate), "day");
@@ -164,9 +173,13 @@ export async function deleteRental(req, res) {
             `SELECT "returnDate" FROM rentals WHERE id = $1`,
             [id]
         )).rows[0];
-        if (!rentals) return res.sendStatus(404);
+        if (!rentals) {
+            return res.status(404).send({ message: "Este aluguel não existe!" });
+        }
 
-        if (!rentals.returnDate) return res.status(400).send("Aluguel não finalizado!");
+        if (!rentals.returnDate) {
+            return res.status(400).send({ message: "Aluguel não finalizado!" });
+        }
 
         const { rowCount } = await db.query(
             `DELETE FROM rentals WHERE id = $1`,

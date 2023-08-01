@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { gamesSchema } from "../schemas/games.schemas.js";
-import schemaValidation from "../middlewares/schemaValidation.js";
+import validateSchema from "../middlewares/validateSchema.js";
 import {
     createGame,
     getGames
@@ -9,7 +9,7 @@ import {
 
 const router = Router();
 
-router.post("/games", schemaValidation(gamesSchema), createGame);
+router.post("/games", validateSchema(gamesSchema), createGame);
 router.get("/games", getGames);
 
 export default router;

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { customersSchema } from "../schemas/customers.schemas.js";
-import schemaValidation from "../middlewares/schemaValidation.js";
+import validateSchema from "../middlewares/validateSchema.js";
 import {
     createCustomer,
     getAllCustomers,
@@ -11,9 +11,9 @@ import {
 
 const router = Router();
 
-router.post("/customers", schemaValidation(customersSchema), createCustomer);
+router.post("/customers", validateSchema(customersSchema), createCustomer);
 router.get("/customers", getAllCustomers);
 router.get("/customers/:id", getCustomer);
-router.put("/customers/:id", schemaValidation(customersSchema), updateCustomer);
+router.put("/customers/:id", validateSchema(customersSchema), updateCustomer);
 
 export default router;

@@ -11,11 +11,15 @@ export async function createGame(req, res) {
             `SELECT name FROM games WHERE name = $1`,
             [name]
         );
-        if (result.rows.lengh > 0 || result.rowCount > 0) return res.sendStatus(409);
+        if (result.rows.lengh > 0 || result.rowCount > 0) {
+            return res.status(409).send({ message: "Já existe um jogo com esse nome!" });
+        }
 
         const { rowCount } = await db.query(
             `INSERT INTO games
-            (name, image, "stockTotal", "pricePerDay") VALUES ($1, $2, $3, $4)`,
+                (name, image, "stockTotal", "pricePerDay")
+            VALUES
+                ($1, $2, $3, $4)`,
             [name, image, stockTotal, pricePerDay]
         );
         if (rowCount <= 0) return res.sendStatus(500);
